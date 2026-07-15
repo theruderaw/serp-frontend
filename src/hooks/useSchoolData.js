@@ -16,7 +16,7 @@ export const useSchoolData = () => {
             setInitializing(true);
             const schoolsData = await getSchools();
             if (schoolsData && schoolsData.length > 0) {
-                const schoolData = schoolsData; // Take the first/only school
+                const schoolData = schoolsData[0]; // Take the first/only school
                 setSchool(schoolData);
                 try {
                     const settings = await getSchoolSettings(schoolData.id);
