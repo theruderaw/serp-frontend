@@ -14,9 +14,9 @@ import { useApp } from '../context/AppContext';
 const NAV_ITEMS = [
     { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
     { label: 'Subscription Plan', to: '/subscription-plan', icon: CreditCard },
-    { label: 'Bank Details', to: '/bank-details', icon: Landmark },
-    { label: 'Service Control', to: '/service-control', icon: ShieldCheck },
-    { label: 'Payment Approvals', to: '/payment-approvals', icon: Wallet },
+    { label: 'Bank Details', to: '/subscription-bank', icon: Landmark },
+    { label: 'Service Control', to: '/subscription-validity', icon: ShieldCheck },
+    { label: 'Payment Approvals', to: '/subscription-payment', icon: Wallet },
 ];
 
 const Sidebar = () => {

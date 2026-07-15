@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
 import { Settings } from 'lucide-react';
+
+import { useSchoolData } from '../hooks/useSchoolData';
 import { useGlobalStats } from '../hooks/useGlobalStats';
+import { useSubscriptionPlan } from '../hooks/useSubscriptionPlan';
 
 import BillingModeSelector from '../components/SubscriptionPlan/BillingModeSelector';
 import CumulativePlanForm from '../components/SubscriptionPlan/CumulativePlanForm';
@@ -8,103 +10,73 @@ import BillingAdjustmentForm from '../components/SubscriptionPlan/BillingAdjustm
 import BillingSummary from '../components/SubscriptionPlan/BillingSummary';
 import SaveButton from '../components/SubscriptionPlan/SaveButton';
 import PerStudentPlanForm from '../components/SubscriptionPlan/PerStudentPlanForm';
+import PageHeader from '../components/common/PageHeader';
+
 
 const SubscriptionPlan = () => {
 
+    const { school } = useSchoolData();
     const { stats } = useGlobalStats();
 
-    const totalStudents = Number(stats?.totalstudents ?? 0);
-
-    const [billingMode, setBillingMode] = useState('Cumulative');
-
-    const [monthlyAmount, setMonthlyAmount] = useState('');
-    const [yearlyAmount, setYearlyAmount] = useState('');
-
-    const [discountAmount, setDiscountAmount] = useState('');
-    const [discountText, setDiscountText] = useState('');
-    const [gstPercentage, setGstPercentage] = useState('');
-
-    const [saving, setSaving] = useState(false);
+    const totalStudents = Number(
+        stats?.totalstudents ?? 0
+    );
 
 
+    const {
+        billingMode,
+        setBillingMode,
 
-    const handleMonthlyChange = (value) => {
-        setMonthlyAmount(value);
-        setYearlyAmount(value ? Number(value) * 12 : '');
-    };
+        cumulativeMonthlyAmount,
+        cumulativeYearlyAmount,
 
+        perStudentMonthlyPrice,
+        perStudentYearlyPrice,
 
-    const handleYearlyChange = (value) => {
-        setYearlyAmount(value);
-        setMonthlyAmount(value ? Number(value) / 12 : '');
-    };
+        discountAmount,
+        discountText,
+        gstPercentage,
 
+        setDiscountAmount,
+        setDiscountText,
+        setGstPercentage,
 
-    const netRevenue = Number(yearlyAmount) || 0;
+        handleCumulativeMonthlyChange,
+        handleCumulativeYearlyChange,
 
+        handlePerStudentMonthlyChange,
+        handlePerStudentYearlyChange,
 
+        netRevenue,
 
-    const handleSave = async () => {
+        saving,
 
-        const payload = {
-            billingMode,
+        saveSettings
 
-            monthlyAmount: Number(monthlyAmount) || 0,
-            yearlyAmount: Number(yearlyAmount) || 0,
-
-            discountAmount: Number(discountAmount) || 0,
-            discountText,
-
-            gstPercentage: Number(gstPercentage) || 0,
-        };
-
-
-        setSaving(true);
-
-        try {
-            console.log(payload);
-            // API call here
-        } finally {
-            setSaving(false);
-        }
-    };
+    } = useSubscriptionPlan(
+        school?.id
+    );
 
 
 
     return (
         <div className="space-y-6">
 
-            <div className="flex items-center gap-3">
-
-                <div className="
-                    w-11 h-11 rounded-xl
-                    bg-indigo-50 text-indigo-600
-                    flex items-center justify-center
-                ">
-                    <Settings size={20}/>
-                </div>
-
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">
-                        Subscription Plan Settings
-                    </h1>
-
-                    <p className="text-slate-400 text-sm">
-                        Configure how the school is billed.
-                    </p>
-                </div>
-
-            </div>
+            <PageHeader
+                icon={Settings}
+                title="Subscription Plan Settings"
+                description="Configure how the school is billed."
+            />
 
 
-
-            <div className="
-                bg-white rounded-2xl
-                shadow-[0_2px_12px_rgba(0,0,0,0.06)]
-                border border-slate-100
-                p-8 space-y-8
-            ">
-
+            <div
+                className="
+                    bg-white rounded-2xl
+                    shadow-[0_2px_12px_rgba(0,0,0,0.06)]
+                    border border-slate-100
+                    p-8 space-y-8
+                "
+            >
 
                 <BillingModeSelector
                     billingMode={billingMode}
@@ -112,20 +84,50 @@ const SubscriptionPlan = () => {
                 />
 
 
+                {
+                    billingMode === "Cumulative"
 
-                {billingMode === 'Cumulative' ? (
-                    <CumulativePlanForm
-                        monthlyAmount={monthlyAmount}
-                        yearlyAmount={yearlyAmount}
-                        onChangeMonthly={handleMonthlyChange}
-                        onChangeYearly={handleYearlyChange}
-                    />
-                ) : <PerStudentPlanForm
-                    monthlyPrice={monthlyAmount}
-                    yearlyPrice={yearlyAmount}
-                    onChangeMonthly={handleMonthlyChange}
-                    onChangeYearly={handleYearlyChange}
-                />}
+                        ?
+
+                        <CumulativePlanForm
+                            monthlyAmount={
+                                cumulativeMonthlyAmount
+                            }
+
+                            yearlyAmount={
+                                cumulativeYearlyAmount
+                            }
+
+                            onChangeMonthly={
+                                handleCumulativeMonthlyChange
+                            }
+
+                            onChangeYearly={
+                                handleCumulativeYearlyChange
+                            }
+                        />
+
+                        :
+
+                        <PerStudentPlanForm
+                            monthlyPrice={
+                                perStudentMonthlyPrice
+                            }
+
+                            yearlyPrice={
+                                perStudentYearlyPrice
+                            }
+
+                            onChangeMonthly={
+                                handlePerStudentMonthlyChange
+                            }
+
+                            onChangeYearly={
+                                handlePerStudentYearlyChange
+                            }
+                        />
+
+                }
 
 
 
@@ -134,34 +136,57 @@ const SubscriptionPlan = () => {
                     discountText={discountText}
                     gstPercentage={gstPercentage}
 
-                    onChangeDiscountAmount={setDiscountAmount}
-                    onChangeDiscountText={setDiscountText}
-                    onChangeGstPercentage={setGstPercentage}
+                    onChangeDiscountAmount={
+                        setDiscountAmount
+                    }
+
+                    onChangeDiscountText={
+                        setDiscountText
+                    }
+
+                    onChangeGstPercentage={
+                        setGstPercentage
+                    }
                 />
 
 
 
-                <div className="flex justify-between items-end pt-2">
+                <div
+                    className="
+                        flex justify-between
+                        items-end pt-2
+                    "
+                >
 
                     <BillingSummary
-                        revenue={netRevenue}
-                        discountAmount={discountAmount}
-                        gstPercentage={gstPercentage}
+                        revenue={
+                            billingMode === "Cumulative"
+                                ? netRevenue
+                                : netRevenue * totalStudents
+                        }
+
+                        discountAmount={
+                            discountAmount
+                        }
+
+                        gstPercentage={
+                            gstPercentage
+                        }
                     />
 
 
                     <SaveButton
-                        onClick={handleSave}
+                        onClick={saveSettings}
                         saving={saving}
                     />
 
                 </div>
-
 
             </div>
 
         </div>
     );
 };
+
 
 export default SubscriptionPlan;
