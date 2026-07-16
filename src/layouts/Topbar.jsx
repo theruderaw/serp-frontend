@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
+import NotificationBell from './NotificationBell';
 
 const Topbar = () => {
     const { user } = useApp();
@@ -58,15 +58,7 @@ const Topbar = () => {
 
             {/* Right */}
             <div className="flex items-center gap-4">
-                <button className="relative w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors duration-150">
-                    <Bell size={18} />
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
-                </button>
-
-                <button className="relative w-9 h-9 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors duration-150">
-                    <Bell size={18} />
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                </button>
+                <NotificationBell />
 
                 <div className="flex items-center gap-2.5 pl-3 border-l border-slate-100">
                     <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-bold">

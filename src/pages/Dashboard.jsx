@@ -3,6 +3,7 @@ import { useGlobalStats } from '../hooks/useGlobalStats';
 import { School, UserCheck, Users, Briefcase, Bell, XCircle } from 'lucide-react';
 import { createReminder } from '../api/reminders.api';
 import { getSchools } from '../api/schools.api';
+import { SCHOOL_ID } from '../config/school';
 
 const GRADIENTS = {
     pink: {
@@ -89,7 +90,7 @@ const Dashboard = () => {
             }
 
             await createReminder({
-                schoolId: school.id,
+                schoolId: SCHOOL_ID,
                 message: reminderText,
             });
 

@@ -21,9 +21,15 @@ const PaymentTable = ({
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Added scrollbar-width and ms-overflow-style to the container's className 
+              along with webkit-scrollbar hiding styles 
+            */}
+            <div
+                className="overflow-x-auto overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                style={{ maxHeight: "35rem" }}
+            >
                 <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 border-b border-slate-100">
+                    <thead className="bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                         <tr>
                             <th className="p-4 font-bold uppercase tracking-wider text-slate-500">
                                 Date

@@ -9,6 +9,8 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import SuperAdminBankDetails from "./pages/SuperAdminBankDetails";
 import SuperAdminValidity from "./pages/SuperAdminValidity";
 import SuperAdminPaymentHistory from "./pages/SuperAdminPaymentHistory";
+import SchoolManagement from "./pages/SchoolManagement";
+import SuperAdminSettings from "./pages/SuperAdminSettings";
 
 function App() {
     return (
@@ -29,6 +31,9 @@ function App() {
                         <Route path="/subscription-bank" element={<SuperAdminBankDetails/>} />
                         <Route path="/subscription-validity" element={<SuperAdminValidity/>} />
                         <Route path="/subscription-payment" element={<SuperAdminPaymentHistory/>} />
+                        <Route path="/schools" element={<SchoolManagement/>} />
+                        <Route path="/settings" element={<SuperAdminSettings/>} />
+                        
                         {/* Add more protected pages here as they're built:
                             <Route path="/bank-details" element={<BankDetails />} />
                             <Route path="/service-control" element={<ServiceControl />} />

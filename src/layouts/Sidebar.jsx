@@ -8,11 +8,16 @@ import {
     Wallet,
     LogOut,
     Info,
+    School,
+    Settings2,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import SupportCard from './SupportCard';
 
 const NAV_ITEMS = [
     { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { label: 'School Management', to: '/schools', icon: School },
+    { label: 'Settings', to: '/settings', icon: Settings2 },
     { label: 'Subscription Plan', to: '/subscription-plan', icon: CreditCard },
     { label: 'Bank Details', to: '/subscription-bank', icon: Landmark },
     { label: 'Service Control', to: '/subscription-validity', icon: ShieldCheck },
@@ -42,13 +47,13 @@ const Sidebar = () => {
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 space-y-1">
+            <nav className="space-y-1">
                 {NAV_ITEMS.map(({ label, to, icon: Icon }) => (
                     <NavLink
                         key={to}
                         to={to}
                         className={({ isActive }) =>
-                            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 ${
+                            `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[17px] font-medium transition-colors duration-150 ${
                                 isActive
                                     ? 'bg-indigo-50 text-indigo-600 font-semibold'
                                     : 'text-slate-500 hover:bg-indigo-50/60 hover:text-indigo-600'
@@ -61,16 +66,21 @@ const Sidebar = () => {
                 ))}
             </nav>
 
+            {/* Spacer pushes Support + Logout to the bottom */}
+            <div className="flex-1" />
+
+            <SupportCard />
+
             {/* Bottom */}
-            <div className="space-y-1 pt-4 border-t border-slate-100">
+            <div className="space-y-1 pt-4 mt-4 border-t border-slate-100">
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-semibold text-red-500 hover:bg-red-50 transition-colors duration-150"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors duration-150"
                 >
                     <LogOut size={16} />
                     <span>Logout</span>
                 </button>
-                <div className="flex items-center gap-2.5 px-3 py-2 text-[12px] text-slate-400">
+                <div className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-slate-400">
                     <Info size={14} />
                     <span>About Vidyam ERP</span>
                 </div>

@@ -35,7 +35,7 @@ export default function useLogin() {
             const currentSchool = schools[0];
             setSchool(currentSchool);
 
-            const settings = await getSchoolSettings(currentSchool.id);
+            const settings = await getSchoolSettings();
             setSchoolSettings(settings);
         } catch {
             setError("Connection failed.");
@@ -62,7 +62,6 @@ export default function useLogin() {
 
             const payload = {
                 password: formData.password,
-                schoolId: school?.id,
                 ...(identifier.includes("@")
                     ? { email: identifier }
                     : { name: identifier }),

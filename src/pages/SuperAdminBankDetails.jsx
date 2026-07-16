@@ -1,8 +1,9 @@
+import { Building2 } from "lucide-react";
+
 import PageHeader from "../components/common/PageHeader";
 import BankDetailsForm from "../components/BankDetails/BankDetailsForm";
 
 import { useBankDetails } from "../hooks/useBankDetails";
-import { Building2 } from "lucide-react";
 
 const SuperAdminBankDetails = () => {
     const {
@@ -15,8 +16,7 @@ const SuperAdminBankDetails = () => {
     } = useBankDetails();
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
-
+        <div className="mx-auto w-full max-w-4xl space-y-6">
             <PageHeader
                 icon={Building2}
                 title="Bank Details & QR"
@@ -24,7 +24,7 @@ const SuperAdminBankDetails = () => {
             />
 
             {loading ? (
-                <div className="text-center p-8 text-slate-500 text-xs font-bold animate-pulse">
+                <div className="p-8 text-center text-xs font-bold text-slate-500 animate-pulse">
                     Loading bank details...
                 </div>
             ) : (
@@ -36,7 +36,6 @@ const SuperAdminBankDetails = () => {
                     onSave={saveBankDetails}
                 />
             )}
-
         </div>
     );
 };

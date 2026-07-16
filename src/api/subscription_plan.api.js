@@ -1,26 +1,15 @@
+import { SCHOOL_ID } from "../config/school";
 import api from "./axios";
 
-/**
- * Fetch subscription settings for a school.
- *
- * @param {string} schoolId
- */
-export const getSubscriptionSettings = async (schoolId) => {
+export const getSubscriptionSettings = async () => {
     const { data } = await api.get(
-        `/subscriptions/settings/${schoolId}`
+        `/subscriptions/settings/${SCHOOL_ID}`
     );
 
     return data;
 };
 
-/**
- * Update subscription settings for a school.
- *
- * @param {string} schoolId
- * @param {Object} settings
- */
 export const updateSubscriptionSettings = async (
-    schoolId,
     settings
 ) => {
     const payload = {
@@ -82,7 +71,7 @@ export const updateSubscriptionSettings = async (
     };
 
     const { data } = await api.put(
-        `/subscriptions/settings/${schoolId}`,
+        `/subscriptions/settings/${SCHOOL_ID}`,
         payload
     );
 
@@ -145,16 +134,11 @@ export const uploadPaymentReceipt = async (
     return data.url;
 };
 
-/**
- * Fetch payment history.
- *
- * @param {string} schoolId
- */
 export const getSubscriptionPayments =
-    async (schoolId) => {
+    async () => {
         const { data } =
             await api.get(
-                `/subscriptions/payments/${schoolId}`
+                `/subscriptions/payments/${SCHOOL_ID}`
             );
 
         return data;

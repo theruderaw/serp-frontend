@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Shield } from 'lucide-react';
 
-import { Shield } from 'lucide-react';
 import PageHeader from '../components/common/PageHeader';
-
-import {
-    toggleSchoolStatus,
-    resetSchoolAdminPassword,
-} from '../api/schools.api';
-
-import {
-    updateSubscriptionSettings,
-} from '../api/subscription_plan.api';
 
 import { useSchoolValidity } from '../hooks/useValidity';
 
@@ -25,6 +15,9 @@ const SuperAdminValidity = () => {
         settings,
         loading,
         refresh,
+        updateValidity,
+        toggleStatus,
+        resetAdminPassword,
     } = useSchoolValidity();
 
     const [processing, setProcessing] = useState(false);
@@ -72,10 +65,7 @@ const SuperAdminValidity = () => {
         setProcessing(true);
 
         try {
-            await toggleSchoolStatus(
-                school.id,
-                newStatus
-            );
+            await toggleStatus();
 
             await refresh();
         } catch (error) {
@@ -87,21 +77,18 @@ const SuperAdminValidity = () => {
     };
 
     const handleUpdateValidity = async () => {
-        if (!school || !settings) return;
+        if (!settings) return;
 
         setProcessing(true);
 
         try {
-            await updateSubscriptionSettings(
-                school.id,
-                {
-                    ...settings,
-                    validUntil: 
-                        validityForm.validUntil,
-                    validityRemark:
-                        validityForm.validityRemark,
-                }
-            );
+            await updateValidity({
+                validUntil:
+                    validityForm.validUntil,
+
+                validityRemark:
+                    validityForm.validityRemark,
+            });
 
             alert(
                 'Validity updated successfully.'
@@ -133,9 +120,7 @@ const SuperAdminValidity = () => {
 
         try {
             const response =
-                await resetSchoolAdminPassword(
-                    school.id
-                );
+                await resetAdminPassword();
 
             alert(
                 `Password reset successfully. Default is: ${response.defaultPassword}`
@@ -172,7 +157,6 @@ const SuperAdminValidity = () => {
 
     return (
         <div className="w-full h-full overflow-y-auto space-y-4">
-            
 
             <PageHeader
                 icon={Shield}

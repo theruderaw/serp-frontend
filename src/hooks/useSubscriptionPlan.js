@@ -9,12 +9,9 @@ import {
     updateSubscriptionSettings,
 } from "../api/subscription_plan.api";
 
-
-export const useSubscriptionPlan = (schoolId) => {
-
+export const useSubscriptionPlan = () => {
     const [billingMode, setBillingMode] =
         useState("Cumulative");
-
 
     const [
         cumulativeMonthlyAmount,
@@ -26,7 +23,6 @@ export const useSubscriptionPlan = (schoolId) => {
         setCumulativeYearlyAmount,
     ] = useState("");
 
-
     const [
         perStudentMonthlyPrice,
         setPerStudentMonthlyPrice,
@@ -36,7 +32,6 @@ export const useSubscriptionPlan = (schoolId) => {
         perStudentYearlyPrice,
         setPerStudentYearlyPrice,
     ] = useState("");
-
 
     const [
         discountAmount,
@@ -53,34 +48,24 @@ export const useSubscriptionPlan = (schoolId) => {
         setGstPercentage,
     ] = useState("");
 
-
     const [loading, setLoading] =
         useState(false);
 
     const [saving, setSaving] =
         useState(false);
 
-
-
     const loadSettings = useCallback(
         async () => {
-
-            if (!schoolId) return;
-
             try {
                 setLoading(true);
 
                 const data =
-                    await getSubscriptionSettings(
-                        schoolId
-                    );
-
+                    await getSubscriptionSettings();
 
                 setBillingMode(
                     data.billingMode ||
                     "Cumulative"
                 );
-
 
                 setCumulativeMonthlyAmount(
                     data.monthlyAmount ?? ""
@@ -90,7 +75,6 @@ export const useSubscriptionPlan = (schoolId) => {
                     data.yearlyAmount ?? ""
                 );
 
-
                 setPerStudentMonthlyPrice(
                     data.perStudentPrice ?? ""
                 );
@@ -98,7 +82,6 @@ export const useSubscriptionPlan = (schoolId) => {
                 setPerStudentYearlyPrice(
                     data.yearlyPerStudentPrice ?? ""
                 );
-
 
                 setDiscountAmount(
                     data.discountAmount ?? ""
@@ -111,39 +94,25 @@ export const useSubscriptionPlan = (schoolId) => {
                 setGstPercentage(
                     data.gstPercentage ?? ""
                 );
-
-
             } catch (err) {
-
                 console.error(
                     "Failed to load settings",
                     err
                 );
-
             } finally {
-
                 setLoading(false);
-
             }
-
         },
-        [schoolId]
+        []
     );
 
-
-
     useEffect(() => {
-
         loadSettings();
-
     }, [loadSettings]);
-
-
 
     const handleCumulativeMonthlyChange = (
         value
     ) => {
-
         setCumulativeMonthlyAmount(value);
 
         setCumulativeYearlyAmount(
@@ -153,12 +122,9 @@ export const useSubscriptionPlan = (schoolId) => {
         );
     };
 
-
-
     const handleCumulativeYearlyChange = (
         value
     ) => {
-
         setCumulativeYearlyAmount(value);
 
         setCumulativeMonthlyAmount(
@@ -168,12 +134,9 @@ export const useSubscriptionPlan = (schoolId) => {
         );
     };
 
-
-
     const handlePerStudentMonthlyChange = (
         value
     ) => {
-
         setPerStudentMonthlyPrice(value);
 
         setPerStudentYearlyPrice(
@@ -183,12 +146,9 @@ export const useSubscriptionPlan = (schoolId) => {
         );
     };
 
-
-
     const handlePerStudentYearlyChange = (
         value
     ) => {
-
         setPerStudentYearlyPrice(value);
 
         setPerStudentMonthlyPrice(
@@ -198,134 +158,94 @@ export const useSubscriptionPlan = (schoolId) => {
         );
     };
 
-
-
     const saveSettings = async () => {
-
         try {
-
             setSaving(true);
 
+            await updateSubscriptionSettings({
+                billingMode,
 
-            await updateSubscriptionSettings(
-                schoolId,
-                {
+                // Per Student
+                perStudentPrice:
+                    billingMode === "Per Student"
+                        ? Number(
+                              perStudentMonthlyPrice || 0
+                          )
+                        : null,
 
-                    billingMode,
+                yearlyPerStudentPrice:
+                    billingMode === "Per Student"
+                        ? Number(
+                              perStudentYearlyPrice || 0
+                          )
+                        : null,
 
+                // Cumulative
+                monthlyAmount:
+                    billingMode === "Cumulative"
+                        ? Number(
+                              cumulativeMonthlyAmount || 0
+                          )
+                        : null,
 
-                    // Per Student
-                    perStudentPrice:
-                        billingMode === "Per Student"
-                            ? Number(
-                                perStudentMonthlyPrice || 0
-                            )
-                            : null,
+                yearlyAmount:
+                    billingMode === "Cumulative"
+                        ? Number(
+                              cumulativeYearlyAmount || 0
+                          )
+                        : null,
 
+                discountAmount:
+                    Number(
+                        discountAmount || 0
+                    ),
 
-                    yearlyPerStudentPrice:
-                        billingMode === "Per Student"
-                            ? Number(
-                                perStudentYearlyPrice || 0
-                            )
-                            : null,
+                discountText:
+                    discountText || null,
 
+                gstPercentage:
+                    Number(
+                        gstPercentage || 0
+                    ),
 
+                // Reset unrelated fields
+                validUntil: null,
+                validityRemark: null,
 
-                    // Cumulative
-                    monthlyAmount:
-                        billingMode === "Cumulative"
-                            ? Number(
-                                cumulativeMonthlyAmount || 0
-                            )
-                            : null,
+                upiId: null,
+                bankName: null,
+                bankAccountNo: null,
+                bankIfsc: null,
+                bankBranch: null,
+                bankDetails: null,
+                qrCodeUrl: null,
+            });
 
-
-                    yearlyAmount:
-                        billingMode === "Cumulative"
-                            ? Number(
-                                cumulativeYearlyAmount || 0
-                            )
-                            : null,
-
-
-
-                    discountAmount:
-                        Number(
-                            discountAmount || 0
-                        ),
-
-
-                    discountText:
-                        discountText || null,
-
-
-                    gstPercentage:
-                        Number(
-                            gstPercentage || 0
-                        ),
-
-
-
-                    // Reset unrelated fields
-                    validUntil: null,
-                    validityRemark: null,
-
-                    upiId: null,
-                    bankName: null,
-                    bankAccountNo: null,
-                    bankIfsc: null,
-                    bankBranch: null,
-                    bankDetails: null,
-                    qrCodeUrl: null,
-
-                }
-            );
-
-
-
-            // Clear inactive mode values
             if (
                 billingMode === "Per Student"
             ) {
-
                 setCumulativeMonthlyAmount("");
                 setCumulativeYearlyAmount("");
-
             } else {
-
                 setPerStudentMonthlyPrice("");
                 setPerStudentYearlyPrice("");
-
             }
-
-
         } catch (err) {
-
             console.error(
                 "Failed to save settings",
                 err
             );
 
             throw err;
-
-
         } finally {
-
             setSaving(false);
-
         }
-
     };
 
-
-
     return {
-
         // Billing Mode
         billingMode,
         setBillingMode,
-
 
         // Cumulative
         cumulativeMonthlyAmount,
@@ -334,14 +254,12 @@ export const useSubscriptionPlan = (schoolId) => {
         cumulativeYearlyAmount,
         setCumulativeYearlyAmount,
 
-
         // Per Student
         perStudentMonthlyPrice,
         setPerStudentMonthlyPrice,
 
         perStudentYearlyPrice,
         setPerStudentYearlyPrice,
-
 
         // Discount/GST
         discountAmount,
@@ -353,7 +271,6 @@ export const useSubscriptionPlan = (schoolId) => {
         gstPercentage,
         setGstPercentage,
 
-
         // Change handlers
         handleCumulativeMonthlyChange,
         handleCumulativeYearlyChange,
@@ -361,27 +278,22 @@ export const useSubscriptionPlan = (schoolId) => {
         handlePerStudentMonthlyChange,
         handlePerStudentYearlyChange,
 
-
         // Calculated
         netRevenue:
             billingMode === "Cumulative"
                 ? Number(
-                    cumulativeYearlyAmount
-                ) || 0
+                      cumulativeYearlyAmount
+                  ) || 0
                 : Number(
-                    perStudentYearlyPrice
-                ) || 0,
-
+                      perStudentYearlyPrice
+                  ) || 0,
 
         // State
         loading,
         saving,
 
-
         // Actions
         saveSettings,
         reload: loadSettings,
-
     };
-
-};
+}

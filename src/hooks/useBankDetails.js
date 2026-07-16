@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { useSchoolData } from './useSchoolData';
-
 import {
     getSubscriptionSettings,
     updateSubscriptionSettings,
@@ -9,9 +7,8 @@ import {
 } from '../api/subscription_plan.api';
 
 export const useBankDetails = () => {
-    const { school, initializing } = useSchoolData();
-
     const [processing, setProcessing] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [bankForm, setBankForm] = useState({
         upiId: '',
@@ -23,10 +20,10 @@ export const useBankDetails = () => {
     });
 
     const loadBankDetails = useCallback(async () => {
-        if (!school) return;
-
         try {
-            const settings = await getSubscriptionSettings(school.id);
+            setLoading(true);
+
+            const settings = await getSubscriptionSettings();
 
             if (!settings) return;
 
@@ -40,8 +37,10 @@ export const useBankDetails = () => {
             });
         } catch (err) {
             console.error('Failed to load bank details:', err);
+        } finally {
+            setLoading(false);
         }
-    }, [school]);
+    }, []);
 
     useEffect(() => {
         loadBankDetails();
@@ -62,14 +61,12 @@ export const useBankDetails = () => {
     };
 
     const saveBankDetails = async () => {
-        if (!school) return;
-
         try {
             setProcessing(true);
 
-            const currentSettings = await getSubscriptionSettings(school.id);
+            const currentSettings = await getSubscriptionSettings();
 
-            await updateSubscriptionSettings(school.id, {
+            await updateSubscriptionSettings({
                 ...currentSettings,
                 ...bankForm
             });
@@ -82,7 +79,7 @@ export const useBankDetails = () => {
     };
 
     return {
-        loading: initializing,
+        loading,
         processing,
 
         bankForm,
