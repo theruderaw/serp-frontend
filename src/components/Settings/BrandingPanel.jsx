@@ -1,54 +1,99 @@
-import React from "react";
-import { Building2, Image as ImageIcon, Save } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+    Building2,
+    Image as ImageIcon,
+    Save,
+} from "lucide-react";
+
+import { updateCompany } from "../../api/schools.api";
+import { useSchoolData } from "../../hooks/useSchoolData";
 
 import SettingsCard from "./SettingsCard";
 import IconField from "./IconField";
+import { SCHOOL_ID } from "../../config/school";
 
-/**
- * Company Branding panel.
- *
- * Controlled from the parent (SuperAdminSettings) so the eventual data hook
- * only needs to live in one place. Expected shape from a `useSystemSettings`
- * (or similar) hook:
- *
- *   const {
- *     branding,            // { companyName, logoUrl }
- *     savingBranding,      // bool, disables the button + shows spinner state
- *     saveBranding,        // async (payload) => void  -> PATCH /settings/branding
- *   } = useSystemSettings();
- *
- * onChange here just needs to bubble field updates up; onSave should call
- * saveBranding(form) and probably toast on success/failure.
- */
-const BrandingPanel = ({ form, onChange, onSave, saving = false }) => {
+const BrandingPanel = () => {
+    const { schoolSettings } =
+        useSchoolData();
+
+    const [processing, setProcessing] =
+        useState(false);
+
+    const [form, setForm] = useState({
+        name: "",
+        logo: "",
+    });
+
+    useEffect(() => {
+        setForm({
+            name:
+                schoolSettings?.schoolName ??
+                "",
+            logo:
+                schoolSettings?.logo ??
+                "",
+        });
+    }, [schoolSettings]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleSave = async () => {
+        try {
+            setProcessing(true);
+
+            await updateCompany(
+                SCHOOL_ID,
+                {
+                    name: form.name,
+                    logo: form.logo,
+                }
+            );
+        } finally {
+            setProcessing(false);
+        }
+    };
+
     return (
-        <SettingsCard icon={Building2} title="Company Branding" accent="blue">
+        <SettingsCard
+            icon={Building2}
+            title="Company Branding"
+            accent="blue"
+        >
             <IconField
-                label="Company Name"
+                label="School Name"
                 icon={Building2}
-                name="companyName"
-                value={form.companyName}
-                onChange={onChange}
-                placeholder="DigiTrand ERP"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Springfield High School"
             />
 
             <IconField
                 label="Logo URL"
                 icon={ImageIcon}
-                name="logoUrl"
-                value={form.logoUrl}
-                onChange={onChange}
-                placeholder="https://digitrand.com/logo"
+                name="logo"
+                value={form.logo}
+                onChange={handleChange}
+                placeholder="https://example.com/logo.png"
             />
 
             <button
                 type="button"
-                onClick={onSave}
-                disabled={saving}
+                onClick={handleSave}
+                disabled={processing}
                 className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
                 <Save size={16} />
-                {saving ? "Saving..." : "Save Branding"}
+                {processing
+                    ? "Saving..."
+                    : "Save Branding"}
             </button>
         </SettingsCard>
     );

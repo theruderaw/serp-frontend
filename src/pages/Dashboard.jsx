@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useGlobalStats } from '../hooks/useGlobalStats';
-import { School, UserCheck, Users, Briefcase, Bell, XCircle } from 'lucide-react';
+import {
+    School,
+    UserCheck,
+    Users,
+    Briefcase,
+    Bell,
+    XCircle,
+    Settings2,
+    CreditCard,
+    Landmark,
+    ShieldCheck,
+    Wallet,
+    LayoutDashboard,
+} from 'lucide-react';
 import { createReminder } from '../api/reminders.api';
 import { getSchools } from '../api/schools.api';
 import { SCHOOL_ID } from '../config/school';
@@ -24,6 +38,16 @@ const GRADIENTS = {
     },
 };
 
+const NAV_ITEMS = [
+    // { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+    { label: 'School Management', to: '/schools', icon: School },
+    { label: 'Settings', to: '/settings', icon: Settings2 },
+    { label: 'Subscription Plan', to: '/subscription-plan', icon: CreditCard },
+    { label: 'Bank Details', to: '/subscription-bank', icon: Landmark },
+    { label: 'Service Control', to: '/subscription-validity', icon: ShieldCheck },
+    { label: 'Payment Approvals', to: '/subscription-payment', icon: Wallet },
+];
+
 const GradCard = ({ title, value, subtext, icon: Icon, variant }) => {
     const { bg, shadow } = GRADIENTS[variant];
 
@@ -37,7 +61,7 @@ const GradCard = ({ title, value, subtext, icon: Icon, variant }) => {
             <div className="absolute w-[80px] h-[80px] rounded-full bg-white/[0.08] right-10 -bottom-5 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col gap-3">
-                <div className="w-9 h-9 rounded-lg bg-white/20 backdrop-blur-sm flex out items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
                     <Icon size={18} />
                 </div>
 
@@ -97,7 +121,6 @@ const Dashboard = () => {
             alert('Reminder sent successfully');
             setReminderText('');
             setShowReminderModal(false);
-
         } catch (error) {
             console.error('Reminder error:', error);
             alert('Failed to send reminder');
@@ -121,10 +144,7 @@ const Dashboard = () => {
 
                 <button
                     onClick={() => setShowReminderModal(true)}
-                    className="bg-[linear-gradient(135deg,_#6366F1_0%,_#7C3AED_100%)] text-white rounded-[10px] px-[18px] py-2 text-[13px] font-semibold
-                    shadow-[0_4px_12px_rgba(99,102,241,0.3)] hover:shadow-[0_6px_18px_rgba(99,102,241,0.4)] hover:-translate-y-px
-                    active:translate-y-px active:shadow-[0_2px_8px_rgba(99,102,241,0.2)]
-                    transition-all duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] flex items-center gap-2"
+                    className="bg-[linear-gradient(135deg,_#6366F1_0%,_#7C3AED_100%)] text-white rounded-[10px] px-[18px] py-2 text-[13px] font-semibold shadow-[0_4px_12px_rgba(99,102,241,0.3)] hover:shadow-[0_6px_18px_rgba(99,102,241,0.4)] hover:-translate-y-px active:translate-y-px active:shadow-[0_2px_8px_rgba(99,102,241,0.2)] transition-all duration-150 flex items-center gap-2"
                 >
                     <Bell size={14} />
                     Send Reminder
@@ -168,20 +188,41 @@ const Dashboard = () => {
                 />
             </div>
 
-            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-100 p-8 text-center mt-8">
-                <h2 className="text-xl font-bold text-slate-800 mb-2">
-                    Welcome to Super Admin
-                </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+                {NAV_ITEMS.map(({ label, to, icon: Icon }) => (
+                    <NavLink
+                        key={to}
+                        to={to}
+                        className={({ isActive }) =>
+                            `group rounded-2xl border p-6 flex flex-col items-center justify-center text-center transition-all duration-200
+                            ${
+                                isActive
+                                    ? "bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200"
+                                    : "bg-white border-slate-200 text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 hover:-translate-y-1 hover:shadow-lg"
+                            }`
+                        }
+                    >
+                        <div
+                            className={({ isActive }) =>
+                                `w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                                    isActive
+                                        ? "bg-white/20"
+                                        : "bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white"
+                                }`
+                            }
+                        >
+                            <Icon size={26} />
+                        </div>
 
-                <p className="text-slate-500 text-sm">
-                    Use the left sidebar to navigate to Subscription Plan, Bank Details, Service Control, and Payment Approvals.
-                </p>
+                        <span className="mt-4 text-sm font-bold leading-snug">
+                            {label}
+                        </span>
+                    </NavLink>
+                ))}
             </div>
-
             {showReminderModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-
                         <div className="p-5 border-b border-slate-100 flex justify-between items-center">
                             <h2 className="font-bold text-slate-800 flex items-center gap-2">
                                 <Bell size={18} />
@@ -222,7 +263,6 @@ const Dashboard = () => {
                                 {sendingReminder ? 'Sending...' : 'Send'}
                             </button>
                         </div>
-
                     </div>
                 </div>
             )}

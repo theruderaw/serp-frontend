@@ -29,8 +29,31 @@ export const updateSchool = async (id, payload) => {
     return data;
 };
 
+export const updateCompany = async (id, payload) => {
+    const { data } = await api.put(
+        `/schools/${id}/company`,
+        payload
+    );
+    return data;
+};
+
+export const updatePlan = async (
+    id,
+    plan
+) => {
+    const { data } = await api.put(
+        `/schools/${id}/plan`,
+        { plan }
+    );
+
+    return data;
+};
+
 export const toggleSchoolStatus = async (id, status) => {
-    const { data } = await api.patch(`/schools/${id}/status`, status);
+    const { data } = await api.patch(
+        `/schools/${id}/status`,
+        status
+    );
     return data;
 };
 
@@ -39,14 +62,21 @@ export const toggleSchoolStatus = async (id, status) => {
 /* -------------------------------------------------------------------------- */
 
 export const getSchoolUsers = async (schoolId) => {
-    const { data } = await api.get(`/schools/${schoolId}/users`);
+    const { data } = await api.get(
+        `/schools/${schoolId}/users`
+    );
     return data;
 };
 
-export const resetSchoolAdminPassword = async (id) => {
+export const resetSchoolAdminPassword = async (
+    id,
+    newPassword
+) => {
     const { data } = await api.post(
-        `/schools/${id}/reset-admin-password`
+        `/schools/${id}/reset-admin-password`,
+        { newPassword }
     );
+
     return data;
 };
 
@@ -55,7 +85,9 @@ export const resetSchoolAdminPassword = async (id) => {
 /* -------------------------------------------------------------------------- */
 
 export const getSchoolModules = async (schoolId) => {
-    const { data } = await api.get(`/schools/${schoolId}/modules`);
+    const { data } = await api.get(
+        `/schools/${schoolId}/modules`
+    );
     return data;
 };
 

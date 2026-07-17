@@ -6,12 +6,14 @@ import {
 
 import {
     getSchools,
+    getSchool as getSchoolApi,
     createSchool as createSchoolApi,
     updateSchool as updateSchoolApi,
 } from "../api/schools.api";
 
 const useSchools = () => {
-    const [schools, setSchools] = useState([]);
+    const [schools, setSchools] =
+        useState([]);
 
     const [loading, setLoading] =
         useState(true);
@@ -43,6 +45,32 @@ const useSchools = () => {
     useEffect(() => {
         loadSchools();
     }, [loadSchools]);
+
+    const getSchool =
+        useCallback(
+            async (schoolId) => {
+                try {
+                    const existing =
+                        schools.find(
+                            (school) =>
+                                school.id ===
+                                schoolId
+                        );
+
+                    if (existing)
+                        return existing;
+
+                    return await getSchoolApi(
+                        schoolId
+                    );
+                } catch (err) {
+                    console.error(err);
+                    setError(err);
+                    throw err;
+                }
+            },
+            [schools]
+        );
 
     const createSchool =
         useCallback(
@@ -118,6 +146,8 @@ const useSchools = () => {
 
         refresh:
             loadSchools,
+
+        getSchool,
 
         createSchool,
 
